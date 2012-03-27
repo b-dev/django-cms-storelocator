@@ -1,6 +1,9 @@
 import tarfile
 import StringIO
 import shutil
+import urllib
+from django.utils import simplejson as json
+from django.utils.encoding import smart_str
 import os
 import math
 from django.conf import settings
@@ -15,7 +18,7 @@ class LocationManager(models.Manager):
         queryset = super(LocationManager, self).get_query_set()
         rough_distance = distance / 2
         queryset = queryset.filter(
-                    latitude__range=(source_latitude - rough_distance, source_latitude + rough_distance), 
+                    latitude__range=(source_latitude - rough_distance, source_latitude + rough_distance),
                     longitude__range=(source_longitude - rough_distance, source_longitude + rough_distance)
                     )
         locations = []
@@ -29,7 +32,7 @@ class LocationManager(models.Manager):
                     setattr(location, 'distance', exact_distance)
                     locations.append(location)
                     #print "%s - %s" % (location, exact_distance)
-                    
+
         return locations
         #queryset = queryset.filter(id__in=[l.id for l in locations])
         #return queryset
@@ -37,10 +40,10 @@ class LocationManager(models.Manager):
     def GetDistance(self, source_latitude, source_longitude, target_location):
         lat_1 = math.radians(source_latitude)
         long_1 = math.radians(source_longitude)
-        
+
         lat_2 = math.radians(target_location.latitude)
         long_2 = math.radians(target_location.longitude)
-        
+
         dlong = long_2 - long_1
         dlat = lat_2 - lat_1
         a = (math.sin(dlat / 2))**2 + math.cos(lat_1) * math.cos(lat_2) * (math.sin(dlong / 2))**2
@@ -58,13 +61,21 @@ class LocationType(models.Model):
 class Location(models.Model):
     location_types = models.ManyToManyField(LocationType, blank=True, null=True)
     name = models.CharField(max_length=255)
-    address = models.TextField(max_length=255, blank=False)
-    latitude = models.FloatField(blank=False, null=True)
-    longitude = models.FloatField(blank=False, null=True, help_text="If you do not enter a latitude and longitude we will try to find them for you using Google Maps.")
+    address = models.CharField(max_length=255, blank=False)
+    country = models.CharField(max_length=255, null=True, blank=True)
+    region = models.CharField(max_length=255, null=True, blank=True)
+    province = models.CharField(max_length=255, null=True, blank=True)
+    province_short = models.CharField(max_length=10, null=True, blank=True)
+    city = models.CharField(max_length=255, null=True, blank=True)
+    cap = models.CharField(max_length=10, null=True, blank=True)
+    number = models.CharField(max_length=10, null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    longitude = models.FloatField(null=True, blank=True, help_text="If you do not enter a latitude and longitude we will try to find them for you using Google Maps.")
     description = models.TextField(blank=True, null=True)
     phone = models.CharField(max_length=255, blank=True, null=True)
     url = models.URLField(max_length=255, blank=True, null=True)
-    
+    email = models.EmailField(max_length=255, blank=True, null=True)
+
     objects = LocationManager()
 
     class Meta:
@@ -73,19 +84,51 @@ class Location(models.Model):
 
     def __unicode__(self):
         return self.name
-    
-    def get_single_line_address(self):
-        return self.address.replace('\n', ', ')
+
+    def get_full_address(self):
+        map_query = self.address
+        if self.number:
+            map_query += ' %s' % self.number
+        if self.cap:
+            map_query += ', %s' % self.cap
+        if self.city:
+            map_query += ', %s' % self.city
+        return map_query
+
+    def get_lat_long(self):
+        location = urllib.quote_plus(smart_str(self.get_full_address()))
+        request = "http://maps.google.co.uk/maps/api/geocode/json?address=%s&sensor=false" % location
+        response = urllib.urlopen(request).read()
+        data = json.loads(response)
+        if data['status'] == 'OK':
+            # take first result
+            lat = str(data['results'][0]['geometry']['location']['lat'])
+            long = str(data['results'][0]['geometry']['location']['lng'])
+            region = ''
+            for r in data['results'][0]['address_components']:
+                if 'administrative_area_level_1' in r['types']:
+                    region =  r['long_name']
+            return (lat, long, region)
+        else:
+            return (None, None, None)
+
+    def save(self, *args, **kwargs):
+        if not self.latitude or not self.longitude:
+            lat, long, regione = self.get_lat_long()
+            self.latitude = lat
+            self.longitude = long
+            self.region = regione
+        super(Location, self).save(*args, **kwargs) # Call the "real" save() method.
+
 
 DISTANCE_CHOICES = (
-    ('1', '1 Miles'),        
-    ('5', '5 Miles'),        
-    ('10', '10 Miles'),        
-    ('15', '15 Miles'),        
-    ('25', '25 Miles'),        
-    ('50', '50 Miles'),        
-    ('100', '100 Miles'),        
-    ('500', '500 Miles'),        
+    ('1', '1.5 Km'),
+    ('5', '10 Km'),
+    ('10', '15 Km'),
+    ('15', '25 Km'),
+    ('25', '40 Km'),
+    ('50', ' 80 Km'),
+    ('100', '150 Km'),
 )
 
 class StoreLocator(CMSPlugin):
