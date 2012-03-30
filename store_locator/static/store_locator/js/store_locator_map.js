@@ -86,7 +86,7 @@ function location_list_search() {
     var center_search = region;
     if (province != '') {
         center_search = province;
-        new_zoom = 10;
+        new_zoom = 9;
     }
     $.get(get_lat_long_url + "?q=" + center_search, function(data) {
         var latitude = data.split(',')[2];
