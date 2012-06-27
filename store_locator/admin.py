@@ -5,9 +5,10 @@ from django.conf import settings
 from store_locator.views import get_lat_long, get_near_locations, get_list_locations
 
 class LocationAdmin(admin.ModelAdmin):
-    list_display = ('id','name','address','region', 'province', 'phone', 'url')
+    list_display = ('id','name','address','region', 'province', 'phone', 'url', 'latitude', 'longitude')
     list_display_links = ('id','name',)
     list_filter = ('name',)
+    search_fields = ('name', 'region', 'province')
 
     fieldsets = (
         (None, {
