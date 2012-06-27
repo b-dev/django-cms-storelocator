@@ -6,7 +6,7 @@ var zoom_list = {
     "25" : 10,
     "50" : 9,
     "100" : 8,
-    "500" : 7,
+    "500" : 7
 }
 
 var markers = new Array;
@@ -68,6 +68,7 @@ function location_search() {
                 var location_marker = new google.maps.Marker({
                     position: new google.maps.LatLng(location_info.latitude, location_info.longitude),
                     title: location_info.name,
+                    icon: icon
                 });
                 location_marker.setMap(map);
                 location_marker.location_id = location_info.id;
@@ -111,6 +112,7 @@ function location_list_search() {
                 var location_marker = new google.maps.Marker({
                     position: new google.maps.LatLng(location_info.latitude, location_info.longitude),
                     title: location_info.name,
+                    icon: icon
                 });
                 location_marker.setMap(map);
                 location_marker.location_id = location_info.id;
