@@ -173,7 +173,7 @@ function add_location_info_item(location_info, item_name, item_label) {
         }));
         return return_info;
     }
-    console.log(location_info[item_name]);
+//    console.log(location_info[item_name]);
 }
 
 function get_location_marker_click_listener(location_info, location_marker) {
