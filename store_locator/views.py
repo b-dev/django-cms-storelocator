@@ -11,7 +11,10 @@ from store_locator.models import Location
 def get_lat_long(request):
     if not request.GET.get('q'):
         return HttpResponse('')
-    args = urllib.urlencode({'q': request.GET.get('q')})
+    query = request.GET.get('q')
+    if query == "L'Aquila":
+        query = "LAquila"
+    args = urllib.urlencode({'q': query})
     r = urllib2.urlopen("http://maps.google.com/maps/geo?output=csv&%s" % args)
     return HttpResponse(r.read())
 
