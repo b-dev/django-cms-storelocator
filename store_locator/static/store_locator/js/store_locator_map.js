@@ -89,7 +89,7 @@ function location_list_search() {
         center_search = province;
         new_zoom = 9;
     }
-    $.get(get_lat_long_url + "?q=" + center_search, function(data) {
+    $.get(get_lat_long_url + "?q=" + center_search + ',italy', function(data) {
         var latitude = data.split(',')[2];
         var longitude = data.split(',')[3];
         map.setZoom(new_zoom);
