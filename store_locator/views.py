@@ -12,8 +12,8 @@ def get_lat_long(request):
     if not request.GET.get('q'):
         return HttpResponse('')
     query = request.GET.get('q')
-    if query == "L'Aquila":
-        query = "LAquila"
+    if query == "L'Aquila,italy":
+        query = "LAquila,italy"
     args = urllib.urlencode({'q': query})
     r = urllib2.urlopen("http://maps.google.com/maps/geo?output=csv&%s" % args)
     return HttpResponse(r.read())
