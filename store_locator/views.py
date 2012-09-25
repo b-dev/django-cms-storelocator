@@ -1,3 +1,4 @@
+#! -*- coding: utf-8 -*-
 import urllib2
 import urllib
 import json
@@ -14,6 +15,8 @@ def get_lat_long(request):
     query = request.GET.get('q')
     if query == "L'Aquila,italy":
         query = "LAquila,italy"
+    if query == u"Trentino-Alto Adige/Südtirol,italy":
+        query = "Trentino-Alto Adige"
     args = urllib.urlencode({'q': query})
     r = urllib2.urlopen("http://maps.google.com/maps/geo?output=csv&%s" % args)
     return HttpResponse(r.read())

@@ -43,13 +43,20 @@ class StoreLocatorPlugin(CMSPluginBase):
         get_near_locations_url = reverse('admin:get_near_locations_url')
         get_list_locations_url = reverse('admin:get_list_locations_url')
         location_types = LocationType.objects.all()
+
+        region_list = region_list_all.keys()
+        region_list.sort()
+
+        province_list = province_list_all.keys()
+        province_list.sort()
+
         context.update({
             'get_lat_long_url': get_lat_long_url,
             'get_near_locations_url': get_near_locations_url,
             'get_list_locations_url': get_list_locations_url,
             'country_list_all': country_list_all.keys(),
-            'region_list_all': region_list_all.keys(),
-            'province_list_all': province_list_all.keys(),
+            'region_list_all': region_list,
+            'province_list_all': province_list,
             'region_country_all': region_country_all.keys(),
             'province_region_all': province_region_all.keys(),
             'instance': instance,
