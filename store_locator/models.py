@@ -123,9 +123,12 @@ class Location(models.Model):
         lat, long, regione, provincia, short_province = self.get_lat_long()
         self.latitude = lat
         self.longitude = long
-        self.region = regione.lower()
-        self.province = provincia.lower()
-        self.province_short = short_province.lower()
+        if regione:
+            self.region = regione.lower()
+        if provincia:
+            self.province = provincia.lower()
+        if short_province:
+            self.province_short = short_province.lower()
         super(Location, self).save(*args, **kwargs) # Call the "real" save() method.
 
 
