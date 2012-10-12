@@ -97,7 +97,7 @@ class Location(models.Model):
 
     def get_lat_long(self):
         location = urllib.quote_plus(smart_str(self.get_full_address()))
-        request = "http://maps.google.co.uk/maps/api/geocode/json?address=%s&sensor=false" % location
+        request = "http://maps.google.it/maps/api/geocode/json?address=%s&sensor=false" % location
         response = urllib.urlopen(request).read()
         data = json.loads(response)
         if data['status'] == 'OK':
@@ -105,19 +105,27 @@ class Location(models.Model):
             lat = str(data['results'][0]['geometry']['location']['lat'])
             long = str(data['results'][0]['geometry']['location']['lng'])
             region = ''
+            province = ''
+            short_province = ''
             for r in data['results'][0]['address_components']:
                 if 'administrative_area_level_1' in r['types']:
                     region =  r['long_name']
-            return (lat, long, region)
+                if 'administrative_area_level_2' in r['types']:
+                    province =  r['long_name']
+                    short_province = r['short_name']
+
+            return (lat, long, region, province, short_province)
         else:
-            return (None, None, None)
+            return (None, None, None, None, None)
 
     def save(self, *args, **kwargs):
-        if not self.latitude or not self.longitude:
-            lat, long, regione = self.get_lat_long()
-            self.latitude = lat
-            self.longitude = long
-            self.region = regione
+        #if not self.latitude or not self.longitude:
+        lat, long, regione, provincia, short_province = self.get_lat_long()
+        self.latitude = lat
+        self.longitude = long
+        self.region = regione.lower()
+        self.province = provincia.lower()
+        self.province_short = short_province.lower()
         super(Location, self).save(*args, **kwargs) # Call the "real" save() method.
 
 

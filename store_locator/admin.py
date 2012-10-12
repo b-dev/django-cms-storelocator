@@ -15,7 +15,11 @@ class LocationAdmin(admin.ModelAdmin):
             'fields': ('name','location_types',)
         }),
         ('Address', {
-            'fields': ('country', ('region', 'province'), ('address', 'number'), ('cap', 'city'), ('latitude', 'longitude'))
+            'fields': (('address', 'number'), ('cap', 'city',),)
+        }),
+        ('Info Aggiuntive (vengono salvate in automatico)', {
+            'fields': ('region', 'province', 'latitude', 'longitude'),
+            #'classes':('collapse','open')
         }),
         ('Other Information', {
             'fields': ('phone', 'url', 'email', 'description')
