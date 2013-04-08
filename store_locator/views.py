@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404, HttpResponseRedirect
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
+from django.utils import simplejson
 from store_locator.models import Location
 
 def get_lat_long(request):
@@ -17,9 +18,11 @@ def get_lat_long(request):
         query = "LAquila,italy"
     if query == u"Trentino-Alto Adige/Südtirol,italy":
         query = "Trentino-Alto Adige"
-    args = urllib.urlencode({'q': query})
-    r = urllib2.urlopen("http://maps.google.com/maps/geo?output=csv&%s" % args)
-    return HttpResponse(r.read())
+
+    url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % query
+    response = urllib2.urlopen(url)
+    jsongeocode = simplejson.loads(response.read())
+    return HttpResponse(simplejson.dumps(jsongeocode), mimetype="application/json")
 
 def get_near_locations(request):
     try:

@@ -90,8 +90,8 @@ function location_list_search() {
         new_zoom = 9;
     }
     $.get(get_lat_long_url + "?q=" + center_search + ',italy', function(data) {
-        var latitude = data.split(',')[2];
-        var longitude = data.split(',')[3];
+        var latitude = data.results[0].geometry.location.lat;
+        var longitude = data.results[0].geometry.location.lng;
         map.setZoom(new_zoom);
         /*var marker = new google.maps.Marker({
             position: new google.maps.LatLng(latitude, longitude),
