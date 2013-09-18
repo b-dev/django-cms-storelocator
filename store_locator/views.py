@@ -18,7 +18,8 @@ def get_lat_long(request):
         query = "LAquila,italy"
     if query == u"Trentino-Alto Adige/Südtirol,italy":
         query = "Trentino-Alto Adige"
-
+    if query == u"monza e della brianza,italy":
+        query = "Monza-Brainza,italy"
     url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % query
     response = urllib2.urlopen(url)
     jsongeocode = simplejson.loads(response.read())
@@ -32,7 +33,6 @@ def get_near_locations(request):
         location_type = request.GET.get('location_type', '0')
     except:
         return HttpResponse('[]')
-
     locations = Location.objects.near(latitude, longitude, distance)
     if location_type:
         locations = [l for l in locations if location_type in [str(t[0]) for t in l.location_types.values_list('id')]]
