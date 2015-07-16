@@ -110,7 +110,7 @@ class Location(models.Model):
             for r in data['results'][0]['address_components']:
                 if 'administrative_area_level_1' in r['types']:
                     region =  r['long_name']
-                if 'administrative_area_level_2' in r['types']:
+                if 'administrative_area_level_3' in r['types']:
                     province =  r['long_name']
                     short_province = r['short_name']
 
