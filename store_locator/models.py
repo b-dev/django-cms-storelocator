@@ -1,3 +1,4 @@
+# coding=utf-8
 import tarfile
 import StringIO
 import shutil
@@ -47,7 +48,7 @@ PROVINCE_MAP = {
     'FE': 'Ferrara',
     'FI': 'Firenze',
     'FG': 'Foggia',
-    'FC': 'Forlì-Cesena',
+    'FC': u'Forlì-Cesena',
     'FR': 'Frosinone',
     'GE': 'Genova',
     'GO': 'Gorizia',
@@ -55,7 +56,7 @@ PROVINCE_MAP = {
     'IM': 'Imperia',
     'IS': 'Isernia',
     'SP': 'La Spezia',
-    'AQ': u'L’Aquila',
+    'AQ': u'L\'Aquila',
     'LT': 'Latina',
     'LE': 'Lecce',
     'LC': 'Lecco',
