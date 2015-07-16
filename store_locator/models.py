@@ -3,6 +3,7 @@ import tarfile
 import StringIO
 import shutil
 import urllib
+from django.template.defaultfilters import slugify
 from django.utils import simplejson as json
 from django.utils.encoding import smart_str
 import os
@@ -224,7 +225,7 @@ class Location(models.Model):
             short_province = ''
             for r in data['results'][0]['address_components']:
                 if 'administrative_area_level_1' in r['types']:
-                    region =  r['long_name']
+                    region = slugify(r['long_name'])
                 if 'administrative_area_level_2' in r['types']:
                     short_province = r['short_name']
                     province = PROVINCE_MAP.get(r['short_name'], r['long_name'])

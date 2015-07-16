@@ -16,12 +16,8 @@ def get_lat_long(request):
     query = request.GET.get('q')
     if query == "L'Aquila,italy":
         query = "LAquila,italy"
-    if query == u"friuli-venezia giulia":
-        query = "friuli-venezia-giulia"
     if query == u"Trentino-Alto Adige/Südtirol,italy":
         query = "Trentino-Alto Adige"
-    if query == u"monza e della brianza,italy":
-        query = "Monza-Brainza,italy"
     if query == u"monza e della brianza,italy":
         query = "Monza-Brainza,italy"
     url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % query
