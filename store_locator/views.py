@@ -14,12 +14,17 @@ def get_lat_long(request):
     if not request.GET.get('q'):
         return HttpResponse('')
     query = request.GET.get('q')
+    print query
     if query == "L'Aquila,italy":
         query = "LAquila,italy"
     if query == u"Trentino-Alto Adige/Südtirol,italy":
         query = "Trentino-Alto Adige"
-    if query == u"monza e della brianza,italy":
-        query = "Monza-Brainza,italy"
+    if query == u"forlì-cesena,italy":
+        query = "Forli-Cesena,italy"
+    if query == u"reggio emilia,italy":
+        query = "Reggio-Emilia,italy"
+    if query in (u"monza e della brianza,italy", u"monza e brianza,italy"):
+        query = "Monza-Brianza,italy"
     url="http://maps.googleapis.com/maps/api/geocode/json?address=%s&sensor=false" % query
     response = urllib2.urlopen(url)
     jsongeocode = simplejson.loads(response.read())
